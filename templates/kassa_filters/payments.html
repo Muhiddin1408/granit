@@ -1,0 +1,11 @@
+{% load humanize  %}
+{% for payment in payments %}
+    <tr>
+        <td style="text-align: left; font-weight: bold;">{{ forloop.counter}}</td>
+        <td style="text-align: left; font-weight: bold;">{{ payment.category }}</td>
+        <td style="text-align: left; font-weight: bold;">{{ payment.to_where }} so'm</td>
+        <td style="text-align: left; font-weight: bold; color: black;">{{ payment.qancha_dol|floatformat:2|intcomma }} $</td>
+        <td style="text-align: left; font-weight: bold;">{{ payment.izox }}</td>
+        <td style="text-align: left; font-weight: bold;">{{ payment.qachon }}</td>
+    </tr>
+{% endfor %}

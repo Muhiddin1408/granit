@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+    <title>Product | Granit</title>
+{% endblock title %}
+{% block css %}
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+    <link href="{% static 'assets/css/plugins.css'%}" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+        
+    <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/datatables.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/custom_dt_html5.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/dt-global_style.css'%}">
+    <!-- <link href="{% static 'bootstrap/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css" /> -->
+    <!-- END PAGE LEVEL CUSTOM STYLES -->
+{% endblock css %}
+{% block content %}
+        <!--  BEGIN CONTENT AREA  -->
+        <div id="content" class="main-content">
+            <div class="layout-px-spacing">
+                <div class="row layout-top-spacing" id="cancel-row">
+                    <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                        <div class="widget-content widget-content-area br-6" id="content-data">
+                            <div class="table-responsive mb-4 mt-4">
+                               <div class="d-flex align-items-center">
+                                    <form class="d-flex align-items-center" action="{% url 'filterproductlar' %}" method="POST" style="text-align: center; ">
+                                        {% csrf_token %}
+
+                                       <div class="d-flex align-items-center">
+                                           <input class="form-control" type="date" id="from" name="from">
+                                           <label for="from">dan</label>
+                                       </div>
+
+                                        <div class="d-flex align-items-center">
+                                            <input class="form-control" type="date" id="to" name="to">
+                                            <label for="to">gacha</label>
+                                        </div>
+
+                                        <input type="submit" value="Filter" class="btn btn-primary form-control">
+
+                                    </form>
+
+<!--                                 <div class="row justify-content-center">-->
+                                        <div class="col-12 col-md-3 align-items-center">
+                                            <fieldset class="form-group m-0">
+                                                <select class="form-control" id="basicSelect">
+                                                    {% for filial in filials %}
+                                                        {% if filial.name == current_filial %}
+                                                            <option selected>{{ filial.name }}</option>
+                                                        {% else %}
+                                                            <option>{{ filial.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <option>Barcha filiallar</option>
+                                                </select>
+                                            </fieldset>
+                                        </div>
+<!--                                    </div>-->
+                               </div>
+
+                                <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
+
+                                    <thead>
+
+
+
+                                        <tr>
+                                            <th><div class="th-content">№</div></th>
+                                            <th>Mahsulot</th>
+                                            <th>Ishlab chiqaruvchi</th>
+                                            <th>Tannarx so'm</th>
+                                            <th>Tannarx</th>
+                                            <th>Sotish Narxi so'm</th>
+                                            <th>Sotish Narxi</th>
+                                            <th>Soni</th>
+                                            <th>Min. Soni</th>
+                                            <th>Filial</th>
+                                            <th>Guruh</th>
+                                            <th>Barcode</th>
+                                            <th>Expired_date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for productfilial in page_obj %}
+                                            <tr>
+                                                <td class="text-dark">{{ forloop.counter }}</td>
+                                                <td class="text-dark">{{ productfilial.name }}</td>
+                                                <td class="text-dark">{% if productfilial.preparer %}{{ productfilial.preparer }}{% else %}-{% endif %}</td>
+                                                <td class="text-dark">{{ productfilial.som|floatformat:2|intcomma }} so'm</td>
+                                                <td class="text-dark">{{ productfilial.dollar|floatformat:2|intcomma }} $</td>
+                                                <td class="text-dark">{{ productfilial.sotish_som|floatformat:2|intcomma }} so'm</td>
+                                                <td class="text-dark">{{ productfilial.sotish_dollar|floatformat:2|intcomma }} $</td>
+                                                <td class="text-dark">{{ productfilial.quantity|floatformat:0 }}</td>
+                                                <td class="text-dark">{{ productfilial.min_count|floatformat:0 }}</td>
+                                                <td class="text-dark">{{ productfilial.filial.name }}</td>
+                                                <td class="text-dark">{{ productfilial.group }}</td>
+                                                <td class="text-dark">{{ productfilial.barcode }}</td>
+                                                <td class="text-dark">{{ productfilial.expired_date }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- <div class="row justify-content-center">
+                                <nav aria-label="...">
+                                    <ul class="pagination" style="display: flex; align-items: flex-end;">
+                                        <li class="page-item d-none"></li>
+                                        {% if page_obj.has_previous %}
+                                            {% if page_obj.previous_page_number != 1 %}
+                                                <li class="page-item">
+                                                    <a class="page-link" style="border-radius: 5px;" href="?page=1&filial-name={{ current_filial }}">1</a>
+                                                </li>
+                                            {% endif %}
+
+                                            {% if page_obj.previous_page_number > 2 %}
+                                                <li style="padding: 0 10px;">. . .</li>
+                                            {% endif %}
+
+                                            <li class="page-item">
+                                                <a class="page-link" style="border-radius: 5px;" href="?page={{ page_obj.previous_page_number }}&filial-name={{ current_filial }}">{{ page_obj.previous_page_number }}</a>
+                                            </li>
+                                        {% endif %}
+    
+                                        <li class="page-item active">
+                                            <a class="page-link" style="border-radius: 5px;" href="#">{{ page_obj.number }}<span class="sr-only">(current)</span></a>
+                                        </li>
+
+                                        {% if page_obj.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" style="border-radius: 5px;" href="?page={{ page_obj.next_page_number }}&filial-name={{ current_filial }}">{{ page_obj.next_page_number }}</a>
+                                            </li>
+
+                                            {% if page_obj.next_page_number < page_obj.paginator.num_pages|add:"-1" %}
+                                                <li style="padding: 0 10px;">. . .</li>
+                                            {% endif %}
+
+                                            {% if page_obj.paginator.num_pages != page_obj.next_page_number %}
+                                                <li class="page-item">
+                                                    <a class="page-link" style="border-radius: 5px;" href="?page={{ page_obj.paginator.num_pages }}&filial-name={{ current_filial }}">{{ page_obj.paginator.num_pages }}</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endif %}
+                                        <li class="page-item d-none"></li>
+                                    </ul>
+                                </nav>
+                            </div> -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock content %}
+{% block js %}
+
+    <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
+    <script src="{% static 'plugins/table/datatable/datatables.js'%}"></script>
+    <!-- NOTE TO Use Copy CSV Excel PDF Print Options You Must Include These Files  -->
+    <script src="{% static 'plugins/table/datatable/button-ext/dataTables.buttons.min.js'%}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/jszip.min.js'%}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/buttons.html5.min.js'%}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/buttons.print.min.js'%}"></script>
+    <script>
+        $('#html5-extension').DataTable( {
+            dom: '<"row"<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+            buttons: {
+                buttons: [
+                    { extend: 'copy', className: 'btn' },
+                    { extend: 'csv', className: 'btn' },
+                    { extend: 'excel', className: 'btn' },
+                    { extend: 'print', className: 'btn' },
+                ]
+            },
+            // "paging": false,
+            // "info": false,
+            "oLanguage": {
+                "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                "sInfo": " _PAGE_ / _PAGES_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "Izlash",
+               "sLengthMenu": "Results :  _MENU_",
+            },
+            "stripeClasses": [],
+            "lengthMenu": [10, 20, 50, 100],
+            "pageLength": 15
+        } );
+    </script>
+    <script>
+        function getCSRFToken() {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                if (cookie.substring(0, 10) == ('csrftoken' + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(10));
+                    break;
+                }
+                }
+            }
+            return cookieValue;
+        }
+
+        $(document).ready(function(){
+            $('#basicSelect').on("change", function (){
+            
+                let csrfToken = getCSRFToken();
+                let selectedFilial = document.getElementById("basicSelect").value;
+                
+                $.ajax({
+                    headers: { "X-CSRFToken": csrfToken },
+                    type: "GET",
+                    data: {
+                        "filial-name": selectedFilial
+                    },
+                    success: function(responseData) {
+                        document.write(responseData)
+                        document.close()
+                    }
+                });
+
+            });
+        });
+    </script>
+{% endblock js %}

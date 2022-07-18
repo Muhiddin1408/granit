@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+    <title>Bosh Sahifa | Granit</title>
+{% endblock title %}
+{% block css %}
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/widgets/modules-widgets.css'%}">
+    <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+
+    <!-- BEGIN THEME GLOBAL STYLES -->
+    <link href="{% static 'plugins/flatpickr/flatpickr.css'%}" rel="stylesheet" type="text/css">
+    <link href="{% static 'plugins/noUiSlider/nouislider.min.css'%}" rel="stylesheet" type="text/css">
+    <!-- END THEME GLOBAL STYLES -->
+
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="{% static 'assets/css/scrollspyNav.css'%}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'plugins/flatpickr/custom-flatpickr.css'%}" rel="stylesheet" type="text/css">
+    <link href="{% static 'plugins/noUiSlider/custom-nouiSlider.css'%}" rel="stylesheet" type="text/css">
+    <link href="{% static 'plugins/bootstrap-range-Slider/bootstrap-slider.css'%}" rel="stylesheet" type="text/css">
+    <!--  END CUSTOM STYLE FILE  -->
+        <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/datatables.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/custom_dt_html5.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/dt-global_style.css'%}">
+{% endblock css %}
+{% block content %}
+        <!--  BEGIN CONTENT AREA  -->
+        <div id="content" class="main-content">
+            <div class="container">
+                <div class="row layout-top-spacing" style="width: 100%;">
+                    <div class="col-12">
+
+                        
+
+                        <div id="tableSimple" class="col-lg-12 col-12 layout-spacing">
+                            <div class="widget-header">
+                                <div class="row" style="padding-bottom: 20px;">
+                                    <div class="col-4 mt-3">
+                                        <h3> <a href="{% url 'filial' %}"><img src="{% static 'assets/img/back-button.png' %}" alt="Barcha" width="40"></a> {{ fil.name }} </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="statbox widget box box-shadow">
+                                <div class="widget-content widget-content-area br-6">
+                                    <div class="col-lg-12 col-12 layout-spacing">
+
+                                            <div class="widget-content pb-2">
+                                                <div class="row">
+                                                    <div class="form-group mb-0 col-12 col-md-12 col-lg-3">
+                                                        <input id="rangeCalendarFlatpickr" class="form-control flatpickr flatpickr-input active" type="text" placeholder="Sanani tanlang">
+                                                    </div>
+                                                    <div class="form-group mb-0 col-12 col-md-4 col-lg-3">
+                                                        <span class="form-control flatpickr flatpickr-input text-center font-weight-bold" style="border:0" id="som">Savdo: {{ total_shop|floatformat:2|intcomma }} $</span>
+                                                    </div>
+                                                    <div class="form-group mb-0 col-12 col-md-4 col-lg-3">
+                                                        <span class="form-control flatpickr flatpickr-input text-center font-weight-bold" style="border:0" id="dollar">Qabul: {{ total_income|floatformat:2|intcomma }} $</span>
+                                                    </div>
+                                                    <div class="form-group mb-0 col-12 col-md-4 col-lg-3">
+                                                        <span class="form-control flatpickr flatpickr-input text-center font-weight-bold" style="border:0" id="dollar">Farq: {{ farq|floatformat:2|intcomma }} $</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        <div class="widget-content">
+                                            <div class="table-responsive mb-4 mt-4">
+                                                <table class="table" id="html5-extension">
+                                                    <thead>
+                                                        <tr>
+                                                            <th><div class="th-content">№</div></th>
+                                                            <th><div class="th-content">Sana</div></th>
+                                                            <th><div class="th-content">Summa</div></th>
+                                                            <th><div class="th-content">Izoh</div></th>
+                                                            <th><div class="th-content">Status</div></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="fil">
+                                                        {% for income in incomes %}
+                                                            <tr>
+                                                                <td><div class="td-content font-weight-bold">{{ forloop.counter }}</div></td>
+                                                                <td><div class="td-content font-weight-bold">{{ income.date }}</div></td>
+                                                                <th style="border:0"><div class="td-content font-weight-bold">{{ income.total_sum|floatformat:2|intcomma }} $</div></th>
+                                                                <td><div class="td-content font-weight-bold">{% if income.description == ''%} -- {% else %} {{ income.description }} {% endif %}</div></td>
+                                                                <td {% if income.status == 'rejected' %} style="color:red" 
+                                                                    {% elif income.status == 'accepted' %} style="color:royalblue" 
+                                                                    {% endif %}><div class="td-content font-weight-bold">
+                                                                    {% if income.status == 'waiting' %}
+                                                                        
+                                                                    <div class="modal-primary me-1 mb-1 d-inline-block">
+                                                                        <!-- Button trigger for primary themes modal -->
+                                                                        <button type="button" class="btn btn-outline-primary" style="font-weight: bold;"
+                                                                            data-bs-toggle="modal" data-bs-target="#primary">
+                                                                            Qabul qilish
+                                                                        </button>
+                                                            
+                                                                        <!--primary theme Modal -->
+                                                                        <div class="modal fade text-left" id="primary" tabindex="-1"
+                                                                            role="dialog" aria-labelledby="myModalLabel160"
+                                                                            aria-hidden="true">
+                                                                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+                                                                                role="document">
+                                                                                <div class="modal-content" style="width: 250px;">
+                                                                                    <div class="modal-header bg-primary">
+                                                                                        <h5 class="modal-title white" style="color:white; font-weight: bold;" id="myModalLabel160">
+                                                                                            Ishonchingiz komilmi?
+                                                                                        </h5>
+                                                                                        <button type="button" class="close"
+                                                                                            data-bs-dismiss="modal" aria-label="Close">
+                                                                                            <i data-feather="x"></i>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                    <div class="modal-footer">
+                                                                                        <button type="button"
+                                                                                            class="btn btn-light-secondary"
+                                                                                            data-bs-dismiss="modal">
+                                                                                            <i class="bx bx-x d-block d-sm-none"></i>
+                                                                                            <span class="d-none d-sm-block">Yo'q</span>
+                                                                                        </button>
+                                                                                        <a href="/income_status_change/?id={{income.id}}&filial={{income.filial_id}}&status=accepted">
+                                                                                            <div class="btn btn-primary">Xa</div>
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>  
+                                                                    <div class="modal-danger me-1 mb-1 d-inline-block">
+                                                                        <!-- Button trigger for danger theme modal -->
+                                                                        <button type="button" class="btn btn-outline-danger" style="font-weight: bold;"
+                                                                            data-bs-toggle="modal" data-bs-target="#danger">
+                                                                            Rad etish
+                                                                        </button>
+                    
+                                                                        <!--Danger theme Modal -->
+                                                                        <div class="modal fade text-left" id="danger" tabindex="-1"
+                                                                            role="dialog" aria-labelledby="myModalLabel120"
+                                                                            aria-hidden="true">
+                                                                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+                                                                                role="document">
+                                                                                <div class="modal-content" style="width: 250px;">
+                                                                                    <div class="modal-header bg-danger">
+                                                                                        <h5 class="modal-title white" style="color:white; font-weight: bold;" id="myModalLabel120">
+                                                                                            Rad etishga ishonchingiz komilmi?
+                                                                                        </h5>
+                                                                                        <button type="button" class="close"
+                                                                                            data-bs-dismiss="modal" aria-label="Close">
+                                                                                            <i data-feather="x"></i>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                    <div class="modal-footer">
+                                                                                        <button type="button"
+                                                                                            class="btn btn-light-secondary"
+                                                                                            data-bs-dismiss="modal">
+                                                                                            <i class="bx bx-x d-block d-sm-none"></i>
+                                                                                            <span class="d-none d-sm-block">Yo'q</span>
+                                                                                        </button>
+                                                                                        <a href="/income_status_change/?id={{income.id}}&filial={{income.filial_id}}&status=rejected">
+                                                                                            <button class="btn btn-danger">Xa</button>
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>  
+
+                                                                        <!-- <a href="/income_status_change/?id={{income.id}}&filial={{income.filial_id}}&status=rejected"><button class="btn btn-danger">Rad etish</button></a> -->
+                                                                    {% elif income.status == 'accepted' %}
+                                                                        Qabul qilindi
+                                                                    {% elif income.status == 'rejected' %}
+                                                                        Rad etildi
+                                                                    {% endif %}
+                                                                </div></td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock content %}
+{% block js %}
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+    <script src="{% static 'plugins/highlight/highlight.pack.js'%}"></script>
+
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="{% static 'assets/js/scrollspyNav.js'%}"></script>
+    <script src="{% static 'plugins/flatpickr/flatpickr.js'%}"></script>
+    <script src="{% static 'plugins/noUiSlider/nouislider.min.js'%}"></script>
+
+    <script src="{% static 'plugins/flatpickr/custom-flatpickr.js'%}"></script>
+    <script src="{% static 'plugins/noUiSlider/custom-nouiSlider.js'%}"></script>
+    <script src="{% static 'plugins/bootstrap-range-Slider/bootstrap-rangeSlider.js'%}"></script>
+        <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
+    <script src="{% static 'plugins/table/datatable/datatables.js'%}"></script>
+    <!-- NOTE TO Use Copy CSV Excel PDF Print Options You Must Include These Files  -->
+    <script src="{% static 'plugins/table/datatable/button-ext/dataTables.buttons.min.js'%}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/jszip.min.js'%}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/buttons.html5.min.js'%}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/buttons.print.min.js'%}"></script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <script>
+    function getCSRFToken() {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, 10) == ('csrftoken' + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(10));
+                break;
+            }
+            }
+        }
+      return cookieValue;
+    }
+    $(document).ready(function(){
+        $('#rangeCalendarFlatpickr').on("change", function (){
+           
+            var csrfToken = getCSRFToken();
+            var date1 = $('#rangeCalendarFlatpickr').val().slice(0, 10);
+            var date2 = $('#rangeCalendarFlatpickr').val().slice(14, 24);
+            var dt = JSON.stringify({
+                date1:date1,
+                date2:date2,
+            })
+            
+            $.ajax({
+                headers: { "X-CSRFToken": csrfToken },
+                type: "GET",
+                url: `?date1=${date1}&date2=${date2}`,
+                success: function(responseData) {
+                    $("#fil").html(jQuery(responseData).find("#fil").html());
+                }
+            });
+        });
+    });
+
+    $('#html5-extension').DataTable( {
+            dom: '<"row"<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+            buttons: {
+                buttons: [
+                    { extend: 'copy', className: 'btn' },
+                    { extend: 'csv', className: 'btn' },
+                    { extend: 'excel', className: 'btn' },
+                    { extend: 'print', className: 'btn' }
+                ]
+            },
+            "oLanguage": {
+                "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                "sInfo": " _PAGE_ / _PAGES_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "Izlash",
+               "sLengthMenu": "Results :  _MENU_",
+            },
+            "stripeClasses": [],
+            "lengthMenu": [10, 20, 50, 100],
+            "pageLength": 15
+        } );
+    </script>
+    <script src="{% static 'assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+{% endblock js %}

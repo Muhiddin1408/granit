@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize  %}
+{% block css %}
+    
+    
+
+    <link href="{% static 'plugins/flatpickr/flatpickr.css'%}" rel="stylesheet" type="text/css">
+    <link href="{% static 'plugins/noUiSlider/nouislider.min.css'%}" rel="stylesheet" type="text/css">
+    <!-- END THEME GLOBAL STYLES -->
+
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="{% static 'assets/css/scrollspyNav.css'%}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'plugins/flatpickr/custom-flatpickr.css'%}" rel="stylesheet" type="text/css">
+    <link href="{% static 'plugins/noUiSlider/custom-nouiSlider.css'%}" rel="stylesheet" type="text/css">
+    <link href="{% static 'plugins/bootstrap-range-Slider/bootstrap-slider.css'%}" rel="stylesheet" type="text/css">
+    <!--  END CUSTOM STYLE FILE  -->
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/datatables.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/custom_dt_html5.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/dt-global_style.css'%}">
+
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/datatables.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/dt-global_style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/table/datatable/custom_dt_multiple_tables.css' %}">
+    <link href="{% static 'assets/css/components/custom-countdown.css' %}" rel="stylesheet" type="text/css">
+    <!-- END PAGE LEVEL STYLES -->
+{% endblock css %}
+
+
+{% block content %}
+
+    
+    <!--  BEGIN MAIN CONTAINER  -->
+    <!-- <div class="main-container" id="container"> -->
+        <!--  BEGIN CONTENT AREA  -->
+        <div id="content" class="main-content">
+            <div class="layout-px-spacing">
+                <div class="row layout-top-spacing">
+
+                    <div class="col-xl-12 col-lg-8 col-sm-12  layout-spacing">
+                        <div class="widget-content widget-content-area br-6">
+                            <div class="row align-items-center">   
+    
+                                <div class="form-group mb-0 col-12 col-md-3">
+                                    <input id="rangeCalendarFlatpickr" class="form-control flatpickr flatpickr-input active" type="text" placeholder="Sanani tanlang">
+                                </div>
+    
+                                <div class="col-12 col-md-3 text-center">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Kirim</div>
+                                    <div class="h5 mb-0 font-weight-bold" id="total-income" style="color: black;">{{ total_income }} $
+                                        <br>{{total_income_som}} so'm</div>
+                                </div>
+    
+                                <div class="col-12 col-md-3 text-center">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Chiqim</div>
+                                    <div class="h5 mb-0 font-weight-bold" id="total-payment" style="color: black;">{{ total_payment }} $<br>{{total_payment_som}} so'm</div>
+                                </div>
+    
+                                <div class="col-12 col-md-3 text-center">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Qoldiq</div>
+                                    <div class="h5 mb-0 font-weight-bold" id="balance" style="color: black;">{{ balance }} $ <br>{{balance_som}} so'm</div>
+                                </div>
+    
+                            </div>
+                        </div>
+                    </div>
+            
+                    <div class="col-xl-12 col-lg-8 col-sm-12  layout-spacing">
+                        <div class="widget-content widget-content-area br-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <h4>Chiqim</h4>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-right">
+                                        <button class="btn btn-primary" style="width: 148px; margin-right: 18px;" data-toggle="modal" data-target="#ChiqimModal">Chiqim qilish</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="multi-table table table-hover" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left;">#</th>
+                                            <th style="text-align: left;">Chiqim turi</th>
+                                            <th style="text-align: left;">Qayerga</th>
+                                            <th style="text-align: left;">Summa</th>
+                                            <th style="text-align: left;">Izox</th>
+                                            <th style="text-align: left;">Sana</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="payments">
+                                        {% for payment in payments %}
+                                        <tr>
+                                            <td style="text-align: left; font-weight: bold;">{{ forloop.counter}}</td>
+                                            <td style="text-align: left; font-weight: bold;">{{ payment.category }}</td>
+                                            <td style="text-align: left; font-weight: bold;">{{ payment.to_where }} so'm</td>
+                                            <td style="text-align: left; font-weight: bold; color: black;">{{ payment.qancha_dol|floatformat:2|intcomma }} $</td>
+                                            <td style="text-align: left; font-weight: bold;">{{ payment.izox }}</td>
+                                            <td style="text-align: left; font-weight: bold;">{{ payment.qachon }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-12 col-lg-8 col-sm-12  layout-spacing">
+                        <div class="widget-content widget-content-area br-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <h4>Kirim</h4>
+                                </div>
+                            </div>
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="multi-table table table-hover" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left;">#</th>
+                                            <th style="text-align: left;">Filial</th>
+                                            <th style="text-align: left;">Summa</th>
+                                            <th style="text-align: left;">Izoh</th>
+                                            <th style="text-align: left;">Sana</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="incomes">
+                                        {% for income in incomes %}
+                                            <tr>
+                                                <td style="text-align: left; font-weight: bold;">{{ forloop.counter}}</td>
+                                                <td style="text-align: left; font-weight: bold;">{{ income.filial }}</td>
+                                                <td style="text-align: left; font-weight: bold; color:black">{{ income.total_sum|floatformat:2|intcomma }} $</td>
+                                                <td style="text-align: left; font-weight: bold;">{{ income.description }}</td>
+                                                <td style="text-align: left; font-weight: bold;">{{ income.date }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        {% for income in incomes_som %}
+                                            <tr>
+                                                <td style="text-align: left; font-weight: bold;">{{ forloop.counter}}</td>
+                                                <td style="text-align: left; font-weight: bold;">{{ income.filial }}</td>
+                                                <td style="text-align: left; font-weight: bold; color:black">{{ income.total_sum|floatformat:2|intcomma }} so'm</td>
+                                                <td style="text-align: left; font-weight: bold;">{{ income.description }}</td>
+                                                <td style="text-align: left; font-weight: bold;">{{ income.date }}</td>
+                                            </tr>
+                                        {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- chiqim Modal -->
+        <div class="modal fade" id="ChiqimModal" tabindex="-1" aria-labelledby="ChiqimModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <form action="{% url 'chiqim_qilish' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="ChiqimModalLabel">Chiqim qilish</h5>
+                
+                    </div>
+                    <div class="modal-body">
+                        <select class="form-control" name="chiqim_turi" id="">
+                            <option value="" disabled selected>--Chiqim turi--</option>
+                            {% for chiqim_turi in chiqim_turlari %}
+                                <option value="{{chiqim_turi.id}}">{{chiqim_turi.nomi}}</option>
+                            {% endfor %}
+                        </select><br>
+                        <input class="form-control" type="text" name="to_where" placeholder="Qayerga"><br>
+                        <input class="form-control" type="number" name="qancha_dol" placeholder="Summa ($)"><br>
+                        <textarea name="izox" class="form-control" id="" cols="30" rows="5" placeholder="Izox"></textarea>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        
+                    <button type="button" class="btn" data-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Tasdiqlash</button>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
+
+        <!-- Succses Modal -->
+        <div class="modal fade" id="MessageModal" data-backdrop="static" tabindex="-1" aria-labelledby="MessageModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="ChiqimModalLabel" style="color: green;"></h5>
+                
+                    </div>
+                    <div class="modal-body">
+                        {% for message in messages %}
+                            <h4>{{message}}</h4>
+                        {% endfor %}
+                        
+                    </div>
+                    <div class="modal-footer">
+                        
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Yopish</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!--  END CONTENT AREA  -->
+    <!-- </div> -->
+    <!-- END MAIN CONTAINER -->
+{% endblock content %}
+
+{% block js %}
+        <!-- BEGIN PAGE LEVEL SCRIPTS -->
+        <script src="{% static 'plugins/table/datatable/datatables.js' %}"></script>
+        <!--  BEGIN CUSTOM SCRIPTS FILE  -->
+        <script src="{% static 'assets/js/scrollspyNav.js' %}"></script>
+        <script src="{% static 'plugins/countdown/jquery.countdown.min.js' %}"></script>
+        <script src="{% static 'assets/js/components/custom-countdown.js' %}"></script>
+        <script src="https://unpkg.com/feather-icons"></script>
+
+        
+   <script>
+        $(document).ready(function() {
+            $('table.multi-table').DataTable({
+                "oLanguage": {
+                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                    "sInfo": "Showing page _PAGE_ of _PAGES_",
+                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                    "sSearchPlaceholder": "Search...",
+                   "sLengthMenu": "Results :  _MENU_",
+                },
+                "stripeClasses": [],
+                "lengthMenu": [7, 10, 20, 50],
+                "pageLength": 7,
+                drawCallback: function () {
+                    $('.t-dot').tooltip({ template: '<div class="tooltip status" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>' })
+                    $('.dataTables_wrapper table').removeClass('table-striped');
+                }
+            });
+        } );
+    </script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+
+    {% if messages %}
+    <script>
+        $(document).ready(function() {
+            $('#MessageModal').modal({
+                show: true
+            });
+        });
+    </script>
+    {% endif %}
+
+    <script src="{% static 'plugins/highlight/highlight.pack.js'%}"></script>
+
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="{% static 'assets/js/scrollspyNav.js'%}"></script>
+    <script src="{% static 'plugins/flatpickr/flatpickr.js'%}"></script>
+    <script src="{% static 'plugins/noUiSlider/nouislider.min.js'%}"></script>
+
+    <script src="{% static 'plugins/flatpickr/custom-flatpickr.js'%}"></script>
+    <script src="{% static 'plugins/noUiSlider/custom-nouiSlider.js'%}"></script>
+    <script src="{% static 'plugins/bootstrap-range-Slider/bootstrap-rangeSlider.js'%}"></script>
+        <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
+    <script src="{% static 'plugins/table/datatable/datatables.js'%}"></script>
+    <!-- NOTE TO Use Copy CSV Excel PDF Print Options You Must Include These Files  -->
+    <script src="{% static 'plugins/table/datatable/button-ext/dataTables.buttons.min.js'%}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/jszip.min.js'%}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/buttons.html5.min.js'%}"></script>
+    <script src="{% static 'plugins/table/datatable/button-ext/buttons.print.min.js'%}"></script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <script>
+    function getCSRFToken() {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, 10) == ('csrftoken' + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(10));
+                break;
+            }
+            }
+        }
+      return cookieValue;
+    }
+    $(document).ready(function(){
+        $('#rangeCalendarFlatpickr').on("change", function (){
+           
+            var csrfToken = getCSRFToken();
+            var date1 = $('#rangeCalendarFlatpickr').val().slice(0, 10);
+            var date2 = $('#rangeCalendarFlatpickr').val().slice(14, 24);
+            var dt = JSON.stringify({
+                date1:date1,
+                date2:date2,
+            })
+            
+            $.ajax({
+                headers: { "X-CSRFToken": csrfToken },
+                type: "POST",
+                data: {
+                    date1:date1,
+                    date2:date2
+                },
+                success: function(responseData) {
+                    let totalIncome = responseData['total_income']
+                    let totalPayment = responseData['total_payment']
+                    let balance = responseData['balance']
+
+                    $("#total-income").empty();
+                    $("#total-income").append(`${totalIncome} $`)
+                    $("#total-payment").empty();
+                    $("#total-payment").append(`${totalPayment} $`);
+                    $("#balance").empty();
+                    $("#balance").append(`${balance} $`);
+                }
+            });
+
+            $.ajax({
+                headers: { "X-CSRFToken": csrfToken },
+                type: "POST",
+                url: "{% url 'kassa_filter_incomes' %}",
+                data: {
+                    date1:date1,
+                    date2:date2
+                },
+                success: function(responseData) {
+                    $("#incomes").html(responseData);
+                }
+            });
+
+            $.ajax({
+                headers: { "X-CSRFToken": csrfToken },
+                type: "POST",
+                url: "{% url 'kassa_filter_payments' %}",
+                data: {
+                    date1:date1,
+                    date2:date2
+                },
+                success: function(responseData) {
+                    $("#payments").html(responseData);
+                }
+            });
+
+        });
+    });
+    </script>
+    <script>
+        $('#html5-extension').DataTable( {
+            dom: '<"row"<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+            buttons: {
+                buttons: [
+                    { extend: 'copy', className: 'btn' },
+                    { extend: 'csv', className: 'btn' },
+                    { extend: 'excel', className: 'btn' },
+                    { extend: 'print', className: 'btn' }
+                ]
+            },
+            "oLanguage": {
+                "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                "sInfo": " _PAGE_ / _PAGES_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "Izlash",
+               "sLengthMenu": "Results :  _MENU_",
+            },
+            "stripeClasses": [],
+            "lengthMenu": [10, 20, 50, 100],
+            "pageLength": 15
+        } );
+    </script>
+    <script src="{% static 'assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+{% endblock js %}
